@@ -28,16 +28,23 @@ class Select(Database):
     def execute(self) -> None:
         columns_str = ', '.join(self.columns) if isinstance(self.columns, list) else self.columns
         query = f"SELECT {columns_str} FROM {self.table_name}"
+        params = []
+
         if self.where_clause:
             query += f" WHERE {self.where_clause}"
-        result = self.db.execute(query).fetchall() 
+            params = self.where_params  
+        
+        result = self.db.execute(query, params).fetchall() 
         return result
 
 class Update(Database):
     def execute(self) -> None:
+        
         set_clause = ', '.join([f"{col} = ?" for col in self.columns])
         query = f"UPDATE {self.table_name} SET {set_clause} WHERE {self.where_clause}"
-        self.db.execute(query, self.values)
+        
+        params = self.values + self.where_params
+        self.db.execute(query, params)
         self.commit()
 
 class Insert(Database):
@@ -46,5 +53,6 @@ class Insert(Database):
         columns_str = ', '.join(self.columns)
         placeholders = ', '.join(['?' for _ in self.values])
         query = f"INSERT INTO {self.table_name} ({columns_str}) VALUES ({placeholders})"
+        
         self.db.execute(query, self.values)
         self.commit()
