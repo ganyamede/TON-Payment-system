@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        form {
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        input[name="value"] {
+            width: 90%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+    
+        input[name="value"]:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+    
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+    
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    
+        button[type="submit"]:active {
+            background-color: #004080;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST" style="margin-top: 100px;">
+        <div style="display: flex;">
+            <input placeholder="Sum" type="number" name="value">
+        </div>
+        <button type="submit">Pay</button>
+    </form>
+</body>
+</html>

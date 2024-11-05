@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Confirmation</title>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+    .container {
+        background-color: #e0e0e0;
+        padding: 50px;
+        border-radius: 15px;
+        width: 450px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .container div {
+        background-color: #8ecae6;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        color: #000;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    .container .address {
+        font-size: 0.9em;
+        word-wrap: break-word;
+    }
+    .container .amount,
+    .container .time {
+        width: 45%;
+        display: inline-block;
+        font-size: 1em;
+    }
+    .container .confirm {
+        background-color: #8ecae6;
+        padding: 12px;
+        font-size: 1em;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    async function checkAddress() {
+        let dotCount = 0;
+        const url = "http://127.0.0.1/Check/";
+        const params = {
+            address: "{{ address }}"
+        };
+
+        while (true) {
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams(params)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data)
+                if (data === true) {
+                    document.querySelector('.payload').textContent = "Оплата получена!";
+                    break; 
+                } else {
+                    dotCount++;
+                    // Устанавливаем текст в зависимости от счетчика
+                    document.querySelector('.payload').textContent = "Ожидается оплата" + '.'.repeat(dotCount);
+                    
+                    // Если достигнуто 3 точки, сбрасываем счетчик
+                    if (dotCount >= 3) {
+                        dotCount = 0; // Сбрасываем счетчик
+                    }
+                }
+
+            } catch (error) {
+                console.error("Ошибка при запросе:", error);
+            }
+
+            // Ждем 5 секунд перед следующим запросом
+            await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+    }
+
+    // Запускаем проверку при загрузке страницы
+    window.onload = checkAddress;
+</script>
+</head>
+<body>
+
+<div class="container">
+    <div class="address" style="float: left;">{{address}}</div>
+    <div style="display: flex;">
+        <div class="amount">{{value}} TON</div>
+        <span></span>
+        <div class="time">До {{formatted_time}}</div>
+    </div>
+    <h3 align="center" class="payload">Ожидается оплата</h3>
+    <div class="confirm">Подтвердить оплату</div>
+</div>
+
+</body>
+</html>
